@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { Client } from 'tmi.js';
+
 	import WordCloud from '$lib/components/WordCloud.svelte';
 
 	let words: string[] = $state([]);
@@ -38,12 +39,8 @@
 				.split(/\s+/)
 				.filter((word) => word.length > 0 && word.length < 20);
 
-			if (words.length + messageWords.length > maxWords) {
-				const excessCount = words.length + messageWords.length - maxWords;
-				words.splice(0, excessCount);
-			}
-
 			words.push(...messageWords);
+			words = words.slice(-maxWords);
 		});
 
 		return () => {

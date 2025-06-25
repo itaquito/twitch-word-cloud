@@ -6,26 +6,39 @@
 	import { scaleLinear } from 'd3-scale';
 	import { transition } from 'd3-transition';
 	import { onMount } from 'svelte';
+	import { page } from '$app/state';
 
 	interface Props {
 		words: string[];
-		width?: number;
-		height?: number;
 	}
 
 	let svgContainer: SVGElement | null = null;
 
-	let { words, width = 800, height = 800 }: Props = $props();
+	let width = 800;
+	let height = 800;
+	let minAppearances = 2;
+
+	let { words }: Props = $props();
 
 	onMount(() => {
-		const interval = window.setInterval(() => {
-			if (svgContainer) {
-				drawCloud(words);
-			}
-		}, 1000); // Redraw every 5 seconds
+		const { searchParams } = page.url;
+		const interval = parseInt(searchParams.get('interval') || '1000');
+		width = parseInt(searchParams.get('width') || `${width}`);
+		height = parseInt(searchParams.get('height') || `${height}`);
+		minAppearances = parseInt(searchParams.get('min') || `${minAppearances}`);
+
+		const intervalId = window.setInterval(() => {
+			if (!svgContainer) return;
+
+			const countedWords = countWords(words).filter(
+				(currentWord) => currentWord.value >= minAppearances
+			);
+
+			drawCloud(countedWords);
+		}, interval);
 
 		return () => {
-			window.clearInterval(interval);
+			window.clearInterval(intervalId);
 		};
 	});
 
@@ -41,9 +54,7 @@
 		return Object.entries(wordCount).map(([text, value]) => ({ text, value }));
 	};
 
-	const drawCloud = (newWords: string[]) => {
-		const countedWords = countWords(newWords);
-
+	const drawCloud = (countedWords: { text: string; value: number }[]) => {
 		const values = countedWords.map((word) => word.value);
 		sizeScale.domain([Math.min(...values), Math.max(...values)]);
 
@@ -70,24 +81,21 @@
 		const sel = select(svgContainer)
 			.attr('width', width)
 			.attr('height', height)
-			.selectAll<SVGElement, Word>('text')
-			.data(placedWords, (d) => d.text);
+			.selectAll<SVGTextElement, Word>('text')
+			.data(placedWords, (d) => d.text || '');
 
-		// EXIT
 		sel.exit().transition(t).style('opacity', 0).remove();
 
-		// ENTER
 		const enter = sel
 			.enter()
 			.append('text')
 			.attr('text-anchor', 'middle')
-			.attr('transform', `translate(${width / 2},${height / 2})`) // start in center
+			.attr('transform', `translate(${width / 2},${height / 2})`)
 			.style('font-family', 'Impact')
 			.style('fill-opacity', 0)
-			.style('font-size', '1px') // tiny to grow from
-			.text((d) => d.text);
+			.style('font-size', '1px')
+			.text((d) => d.text || '');
 
-		// ENTER + UPDATE
 		enter
 			.merge(sel)
 			.transition(t)
@@ -95,9 +103,9 @@
 			.style('font-size', (d) => `${d.size}px`)
 			.attr(
 				'transform',
-				(d) => `translate(${d.x + width / 2},${d.y + height / 2})rotate(${d.rotate})`
+				(d) => `translate(${(d.x || 0) + width / 2},${(d.y || 0) + height / 2})rotate(${d.rotate})`
 			);
 	};
 </script>
 
-<svg bind:this={svgContainer} class="transition-all" />
+<svg bind:this={svgContainer} class="bg-red-100 transition-all" />

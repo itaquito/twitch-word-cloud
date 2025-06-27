@@ -8,18 +8,19 @@
 	let words: string[] = $state([]);
 
 	let debug = $state(false);
-	let errorMessage = $state('');
+	let logMessage = $state('');
 
 	onMount(() => {
 		const { searchParams } = page.url;
-		const channelName = searchParams.get('channel');
-		const maxWords = parseInt(searchParams.get('words') || '100');
+		const channelName = searchParams.get('channelName');
+		const maxWords = parseInt(searchParams.get('maxWords') || '100');
 
 		debug = searchParams.get('debug') !== null;
 
 		if (!channelName) {
-			errorMessage += 'Channel name is required';
-			return console.error(errorMessage);
+			logMessage += 'Channel name is required\n';
+
+			return;
 		}
 
 		const client = new Client({
@@ -29,7 +30,7 @@
 		client.connect();
 
 		client.on('connected', (address, port) => {
-			console.log(`Connected to ${address}:${port}`);
+			logMessage += `Connected to ${address}:${port}\n`;
 		});
 
 		client.on('message', (_, tags, message) => {
@@ -43,15 +44,30 @@
 			words = words.slice(-maxWords);
 		});
 
+		client.on('disconnected', () => {
+			logMessage += 'Disconnected from Twitch\n';
+		});
+
+		client.on('reconnect', () => {
+			logMessage += 'Reconnecting to Twitch...\n';
+		});
+
 		return () => {
 			client.disconnect();
 		};
 	});
+
+	$effect(() => {
+		console.log('Log message:', logMessage);
+	});
 </script>
 
-{#if debug && errorMessage}
-	<div class="flex h-screen w-screen items-center justify-center font-bold text-red-600">
-		<p>{errorMessage}</p>
+{#if debug && logMessage}
+	<div
+		class="absolute top-0 left-0 z-100 flex h-screen w-screen flex-col items-center justify-center font-bold whitespace-pre-wrap text-red-600"
+	>
+		<p>{logMessage}</p>
+		<p>Words amount: {words.length}</p>
 	</div>
 {/if}
 

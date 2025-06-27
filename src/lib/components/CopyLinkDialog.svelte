@@ -26,12 +26,12 @@
 
 		const url = new URL('/overlay', window.location.origin);
 
-		url.searchParams.set('channel', parameters.channelName.toLowerCase());
+		url.searchParams.set('channelName', parameters.channelName.toLowerCase());
 		url.searchParams.set('width', parameters.width.toString());
 		url.searchParams.set('height', parameters.height.toString());
-		url.searchParams.set('words', parameters.maxWords.toString());
+		url.searchParams.set('maxWords', parameters.maxWords.toString());
 		url.searchParams.set('interval', parameters.interval.toString());
-		url.searchParams.set('min', parameters.minAppearances.toString());
+		url.searchParams.set('minAppearances', parameters.minAppearances.toString());
 
 		return url.toString();
 	});

@@ -25,7 +25,7 @@
 		const interval = parseInt(searchParams.get('interval') || '1000');
 		width = parseInt(searchParams.get('width') || `${width}`);
 		height = parseInt(searchParams.get('height') || `${height}`);
-		minAppearances = parseInt(searchParams.get('min') || `${minAppearances}`);
+		minAppearances = parseInt(searchParams.get('minAppearances') || `${minAppearances}`);
 
 		const intervalId = window.setInterval(() => {
 			if (!svgContainer) return;
@@ -108,4 +108,4 @@
 	};
 </script>
 
-<svg bind:this={svgContainer} class="bg-red-100 transition-all" />
+<svg bind:this={svgContainer} class="transition-all" />

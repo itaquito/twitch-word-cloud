@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { Copy } from '@lucide/svelte';
 
+	import { toast } from 'svelte-sonner';
+
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
@@ -34,8 +36,16 @@
 		return url.toString();
 	});
 
-	const handleCopyToClipboard = () => {
-		navigator.clipboard.writeText(link);
+	const handleCopyToClipboard = async () => {
+		try {
+			await navigator.clipboard.writeText(link);
+
+			toast.success('Link copied to clipboard!');
+		} catch (error) {
+			console.error('Something went wrong while copying the link to the clipboard', error);
+
+			toast.error('Something went wrong! Try to copy the link manually.');
+		}
 	};
 </script>
 

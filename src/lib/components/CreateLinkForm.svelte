@@ -2,7 +2,7 @@
 	import { z } from 'zod';
 
 	const FormSchema = z.object({
-		twitchChannel: z
+		channelName: z
 			.string({ message: 'The Twitch channel name must be a string' })
 			.nonempty({ message: 'The Twitch channel name is required' }),
 		width: z
@@ -37,11 +37,12 @@
 
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
+	import CopyLinkDialog from '$lib/components/CopyLinkDialog.svelte';
 
 	const form = superForm(
 		defaults(
 			{
-				twitchChannel: '',
+				channelName: '',
 				maxWords: 100,
 				interval: 1000,
 				width: 800,
@@ -56,20 +57,24 @@
 			resetForm: false,
 			onUpdate: ({ form }) => {
 				if (form.valid) {
-					console.log('Form is valid:', form.data);
+					isModalOpen = true;
 				}
 			}
 		}
 	);
 	const { form: formData, enhance } = form;
+
+	let isModalOpen = $state(false);
 </script>
 
-<form method="POST" class="space-y-6" use:enhance>
-	<Form.Field {form} name="twitchChannel" class="w-full">
+<CopyLinkDialog bind:isModalOpen parameters={$formData} />
+
+<form class="space-y-6" use:enhance>
+	<Form.Field {form} name="channelName" class="w-full">
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Twitch channel name</Form.Label>
-				<Input {...props} bind:value={$formData.twitchChannel} type="text" placeholder="itaquito" />
+				<Input {...props} bind:value={$formData.channelName} type="text" placeholder="itaquito" />
 			{/snippet}
 		</Form.Control>
 		<Form.Description>The username of your Twitch channel.</Form.Description>

@@ -1,38 +1,33 @@
-# sv
+# Twitch Word cloud
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Create a word cloud that updates in real time based on your Twitch chat.
 
-## Creating a project
+This app generates a link that you can use to embed the word cloud into your broadcast software as a browser source or just use it in a tab of your browser.
 
-If you're seeing this, you've probably already done this step. Congrats!
+Everything runs on your browser, no backend needed! From the chat messages to the word cloud generation. You can host this app in basically any web hosting service.
 
-```bash
-# create a new project in the current directory
-npx sv create
+## Usage
 
-# create a new project in my-app
-npx sv create my-app
-```
+### Online
+Use it now by going to [wordcloud.itaqui.to](https://wordcloud.itaqui.to)
 
-## Developing
+### Local
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+1. This project requires Node.js and npm to run. Make sure you have them installed on your machine.
+2. Clone the repository or download it as a ZIP file.
+3. Install dependencies
+   ```bash
+   npm install
+   ```
+4. Build the project
+   ```bash
+   npm run build
+   ```
+5. Preview the production build locally 
+   ```bash
+    npm run preview
+    ```
 
-```bash
-npm run dev
+## Contributing
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+If you want to contribute to this project, feel free to open an issue or a pull request. Any contributions are welcome!

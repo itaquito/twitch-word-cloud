@@ -3,6 +3,8 @@
 
 	import { toast } from 'svelte-sonner';
 
+	import { ExternalLink } from '@lucide/svelte';
+
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
@@ -71,5 +73,12 @@
 				<Copy />
 			</Button>
 		</div>
+
+		<Dialog.Footer>
+			<Button href={link} target="_blank">
+				Open in new tab
+				<ExternalLink />
+			</Button>
+		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>

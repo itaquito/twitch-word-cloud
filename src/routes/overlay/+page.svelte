@@ -40,7 +40,9 @@
 				.split(/\s+/)
 				.filter((word) => word.length > 0 && word.length < 20);
 
-			words.push(...messageWords);
+			const uniqueWords = new Set(messageWords);
+
+			words.push(...uniqueWords);
 			words = words.slice(-maxWords);
 		});
 
